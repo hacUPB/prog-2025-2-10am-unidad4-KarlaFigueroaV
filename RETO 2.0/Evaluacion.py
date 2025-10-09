@@ -39,8 +39,8 @@ def simulacion_balance():
             continue
 
         try:
-            masa_nueva = float(input("Ingrese el peso (kg): ").strip())
-            brazo_nuevo = float(input("Ingrese el brazo (m): ").strip())
+            masa_nueva = float(input("Ingrese el peso (kg): "))
+            brazo_nuevo = float(input("Ingrese el brazo (m): "))
         except ValueError:
             print("Entrada inválida. Debes ingresar números.")
             continue
@@ -67,11 +67,35 @@ def simulacion_balance():
         else:
             print("¡Avión inestable!")
 
+    # Calcular estadísticas
+    stats_pesos = stats(pesos)
+    stats_momentos = stats(momentos)
+    stats_cg = stats(centros_gravedad)
+
+    # Construir resumen
     resumen = {
-        "pesos": {"valores": pesos, **stats(pesos)},
-        "momentos": {"valores": momentos, **stats(momentos)},
-        "centros_gravedad": {"valores": centros_gravedad, **stats(centros_gravedad)},
-        "limites_cg": {"inferior": limite_inferior, "superior": limite_superior},
+        "pesos": {
+            "valores": pesos,
+            "min": stats_pesos["min"],
+            "max": stats_pesos["max"],
+            "promedio": stats_pesos["promedio"]
+        },
+        "momentos": {
+            "valores": momentos,
+            "min": stats_momentos["min"],
+            "max": stats_momentos["max"],
+            "promedio": stats_momentos["promedio"]
+        },
+        "centros_gravedad": {
+            "valores": centros_gravedad,
+            "min": stats_cg["min"],
+            "max": stats_cg["max"],
+            "promedio": stats_cg["promedio"]
+        },
+        "limites_cg": {
+            "inferior": limite_inferior,
+            "superior": limite_superior
+        }
     }
 
     print("\n=== Diccionario de resultados ===")
@@ -87,19 +111,31 @@ def simulacion_balance():
             print(f"\n{clave}: {contenido}")
 
     input("\nPresiona Enter para salir...")
+    return resumen
 
-# Menú principal
+resumen_guardado = None  
+
 while True:
     print("\n=== MENÚ PRINCIPAL ===")
     print("1. Ejecutar simulación de peso y balance")
-    print("2. Salir")
+    print("2. Mostrar listas del resumen")
+    print("3. Salir")
 
     opcion_menu = input("Selecciona una opción: ")
 
     if opcion_menu == "1":
-        simulacion_balance()
+        resumen_guardado = simulacion_balance()
     elif opcion_menu == "2":
-        print("Programa finalizado.")
+        if resumen_guardado:
+            print("\n=== LISTAS DEL RESUMEN ===")
+            for clave, contenido in resumen_guardado.items():
+                if isinstance(contenido, dict) and "valores" in contenido:
+                    print(f"\n{clave.upper()}:")
+                    print(" ", " ".join(f"{v:.3f}" for v in contenido["valores"]))
+        else:
+            print("\nPrimero debes ejecutar la simulación (opción 1).")
+    elif opcion_menu == "3":
+        print("Programa finalizado")
         break
     else:
         print("Opción No Válida")
