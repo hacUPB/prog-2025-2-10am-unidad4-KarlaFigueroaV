@@ -1,3 +1,5 @@
+# CÓDIGO 2 RETO PYTHON (PESO Y BALANCE)
+
 def stats(valores):
     if not valores:
         return {"min": None, "max": None, "promedio": None}
@@ -7,18 +9,31 @@ def stats(valores):
         "promedio": sum(valores) / len(valores),
     }
 
+
 def fmt(x):
     return None if x is None else f"{x:.3f}"
 
+
+
+pesos = []
+momentos = []
+centros_gravedad = []
+
+limites_cg = {
+    "inferior": 10.0,
+    "superior": 20.0
+}
+
+
 def simulacion_balance():
-    pesos = []
-    momentos = []
-    centros_gravedad = []
+    global pesos, momentos, centros_gravedad
+
+    pesos.clear()
+    momentos.clear()
+    centros_gravedad.clear()
 
     peso_total = 0.0
     momento_total = 0.0
-    limite_inferior = 10.0
-    limite_superior = 20.0
     n = 0
 
     while True:
@@ -27,7 +42,6 @@ def simulacion_balance():
         print("2. Carga")
         print("3. Combustible")
         print("4. Terminar")
-
         opcion = input("Selecciona: ").strip()
 
         if opcion == "4":
@@ -45,15 +59,15 @@ def simulacion_balance():
             print("Entrada inválida. Debes ingresar números.")
             continue
 
-        if masa_nueva <= 0:
-            print("El peso debe ser mayor que 0.")
+        if masa_nueva <= 0 or brazo_nuevo <= 0:
+            print("El peso y el brazo deben ser mayores que 0.")
             continue
 
         peso_total += masa_nueva
         momento_total += masa_nueva * brazo_nuevo
         cg = momento_total / peso_total
-        n += 1
 
+        n += 1
         pesos.append(peso_total)
         momentos.append(momento_total)
         centros_gravedad.append(cg)
@@ -62,80 +76,66 @@ def simulacion_balance():
         print(f"Peso total: {peso_total:.2f} kg")
         print(f"Centro de gravedad (CG): {cg:.2f} m")
 
-        if limite_inferior <= cg <= limite_superior:
+        if limites_cg["inferior"] <= cg <= limites_cg["superior"]:
             print("Avión balanceado")
         else:
             print("¡Avión inestable!")
 
-    # Calcular estadísticas
-    stats_pesos = stats(pesos)
-    stats_momentos = stats(momentos)
-    stats_cg = stats(centros_gravedad)
+    print("\nSimulación completada. Datos guardados correctamente.")
 
-    # Construir resumen
-    resumen = {
-        "pesos": {
-            "valores": pesos,
-            "min": stats_pesos["min"],
-            "max": stats_pesos["max"],
-            "promedio": stats_pesos["promedio"]
-        },
-        "momentos": {
-            "valores": momentos,
-            "min": stats_momentos["min"],
-            "max": stats_momentos["max"],
-            "promedio": stats_momentos["promedio"]
-        },
-        "centros_gravedad": {
-            "valores": centros_gravedad,
-            "min": stats_cg["min"],
-            "max": stats_cg["max"],
-            "promedio": stats_cg["promedio"]
-        },
-        "limites_cg": {
-            "inferior": limite_inferior,
-            "superior": limite_superior
-        }
+
+def imprimir_listas():
+    if not pesos:
+        print("\nNo hay datos aún. Ejecuta la simulación primero (opción 1).")
+        return
+
+    print("\n=== LISTAS DE RESULTADOS ===")
+
+    listas = {
+        "Pesos": pesos,
+        "Momentos": momentos,
+        "Centros de Gravedad": centros_gravedad,
     }
 
-    print("\n=== Diccionario de resultados ===")
-    for clave, contenido in resumen.items():
-        if isinstance(contenido, dict) and "valores" in contenido:
-            vals_fmt = [f"{v:.3f}" for v in contenido["valores"]]
-            print(f"\n{clave}:")
-            print(f"  valores  : {vals_fmt}")
-            print(f"  min      : {fmt(contenido['min'])}")
-            print(f"  max      : {fmt(contenido['max'])}")
-            print(f"  promedio : {fmt(contenido['promedio'])}")
-        else:
-            print(f"\n{clave}: {contenido}")
+    for nombre, lista in listas.items():
+        print(f"\n--- {nombre.upper()} ---")
 
-    input("\nPresiona Enter para salir...")
-    return resumen
+     
+        lista_con_formato = "[" + ", ".join(f"{v:.3f}" for v in lista) + "]"
+        print(f"Lista completa (con formato): {lista_con_formato}")
 
-resumen_guardado = None  
+        for i, valor in enumerate(lista, start=1):
+            print(f"Elemento {i}: {valor:.3f}")
 
+
+        estad = stats(lista)
+        print(f"\n  Mínimo   : {fmt(estad['min'])}")
+        print(f"  Máximo   : {fmt(estad['max'])}")
+        print(f"  Promedio : {fmt(estad['promedio'])}")
+        print(f"  Total elementos: {len(lista)}")
+
+    print("\n=== DICCIONARIO DE LÍMITES DEL C.G. ===")
+    for clave, valor in limites_cg.items():
+        print(f"{clave}: {fmt(valor)}")
+
+    input("\nPresiona Enter para volver al menú principal...")
+
+
+# === Menú principal ===
 while True:
     print("\n=== MENÚ PRINCIPAL ===")
     print("1. Ejecutar simulación de peso y balance")
-    print("2. Mostrar listas del resumen")
+    print("2. Imprimir listas y diccionario de límites")
     print("3. Salir")
 
     opcion_menu = input("Selecciona una opción: ")
 
     if opcion_menu == "1":
-        resumen_guardado = simulacion_balance()
+        simulacion_balance()
     elif opcion_menu == "2":
-        if resumen_guardado:
-            print("\n=== LISTAS DEL RESUMEN ===")
-            for clave, contenido in resumen_guardado.items():
-                if isinstance(contenido, dict) and "valores" in contenido:
-                    print(f"\n{clave.upper()}:")
-                    print(" ", " ".join(f"{v:.3f}" for v in contenido["valores"]))
-        else:
-            print("\nPrimero debes ejecutar la simulación (opción 1).")
+        imprimir_listas()
     elif opcion_menu == "3":
-        print("Programa finalizado")
+        print("Programa finalizado. ¡Hasta luego!")
         break
     else:
-        print("Opción No Válida")
+        print("Opción no válida.")
