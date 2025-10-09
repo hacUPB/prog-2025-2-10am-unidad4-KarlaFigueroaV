@@ -1,5 +1,4 @@
 # Analisis 
-<<<<<<< HEAD
 ## Listas
 se utilizaron listas para almacenar los valores acumulados de cada iteración durante la simulación. Se crearon tres listas: pesos, momentos y centros_gravedad. Cada vez que el usuario ingresaba un nuevo elemento (pasajero, carga o combustible), el programa calculaba el peso total, el momento total y el centro de gravedad, y luego añadía esos valores a sus respectivas listas. Esto permitió registrar la evolución de los datos paso a paso, en lugar de sobrescribirlos como ocurría en el código original.
 ## Diccionario
@@ -16,4 +15,3 @@ Cada vez que se agrega un nuevo elemento (pasajero, carga o combustible), se act
 La impresión final del programa también se optimizó. El bucle for recorre cada clave del diccionario resumen y muestra los datos de manera estructurada, formateando las listas y estadísticas con fmt() para mantener la uniformidad visual. Así, el usuario puede ver los valores acumulados, los límites de equilibrio y las estadísticas finales sin perder claridad. En resumen, el código mantiene la lógica original del cálculo de balance, pero ahora implementa listas dinámicas, diccionarios jerárquicos y validaciones que lo hacen más completo, profesional y cercano a una aplicación real de análisis de datos aeronáuticos.
 
 Declaración de IA: Se utilizó la IA para mejorar la redacción del análisis.
->>>>>>> a02745b81fe00cb1fa724423032d6783d5e53077
